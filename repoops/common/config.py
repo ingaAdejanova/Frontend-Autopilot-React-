@@ -19,7 +19,7 @@ OPENAI_STRONG_API_KEY = env("OPENAI_STRONG_API_KEY", "")
 OPENAI_STRONG_MODEL = env("OPENAI_STRONG_MODEL", "gpt-5")
 
 
-# --- RAG / Embeddings (enterprise) ---
+# --- RAG / Embeddings ---
 EMBEDDINGS_PROVIDER = env("EMBEDDINGS_PROVIDER", "openai_compatible")  # openai_compatible|hash
 EMBEDDINGS_BASE_URL = env("EMBEDDINGS_BASE_URL", OPENAI_BASE_URL)
 EMBEDDINGS_API_KEY = env("EMBEDDINGS_API_KEY", OPENAI_API_KEY) or ""
