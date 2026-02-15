@@ -1,0 +1,6 @@
+{"id":"t1","task":"Update the main App component to show a loading state while data is being fetched.","expected_paths":["src/App.tsx"],"tags":["react","ui"]}
+{"id":"t2","task":"Add a new route for the Settings page and wire it into the router.","expected_paths":["src/routes.tsx","src/pages/Settings.tsx"],"tags":["routing","react-router"]}
+{"id":"t3","task":"Refactor the API client to include a shared base URL and default headers.","expected_paths":["src/services/api.ts"],"tags":["api","http"]}
+{"id":"t4","task":"Fix a Redux selector to avoid returning undefined when the slice is missing.","expected_paths":["src/store.ts","src/store/selectors.ts"],"tags":["redux","state"]}
+{"id":"t5","task":"Add a reusable `useDebounce` hook and use it in the search input.","expected_paths":["src/hooks/useDebounce.ts","src/components/SearchInput.tsx"],"tags":["hooks","ui"]}
+{"id":"t6","task":"Add a basic unit test for the Header component render.","expected_paths":["src/components/Header.tsx","src/__tests__/Header.test.tsx"],"tags":["tests","rtl"]}

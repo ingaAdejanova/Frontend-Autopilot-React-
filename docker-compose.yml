@@ -1,0 +1,135 @@
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: repoops
+      POSTGRES_PASSWORD: repoops
+      POSTGRES_DB: repoops
+    ports:
+      - "5432:5432"
+    volumes:
+      - repoops_db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U repoops -d repoops"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+
+  api:
+    build:
+      context: .
+      dockerfile: infra/Dockerfile
+      target: api
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    volumes:
+      - repoops_workspaces:/workspaces
+    environment:
+      WORKSPACE_ROOT: /workspaces
+      # Make sure DATABASE_URL uses host "db" (see note below)
+      LANGSMITH_TRACING: "true"
+      LANGSMITH_PROJECT: "My First App"
+
+  worker:
+    build:
+      context: .
+      dockerfile: infra/Dockerfile
+      target: worker
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - repoops_workspaces:/workspaces
+    environment:
+      WORKSPACE_ROOT: /workspaces
+      LANGSMITH_TRACING: "true"
+      LANGSMITH_PROJECT: "My First App"
+
+  zoekt-index:
+    build:
+      context: .
+      dockerfile: infra/Dockerfile.zoekt
+    profiles: ["zoekt"]
+    restart: unless-stopped
+    environment:
+      ZOEK_INDEX_PATHS: /workspaces
+      ZOEK_INDEX_INTERVAL: "60"
+      ZOEK_INDEX_ARGS: ""
+    volumes:
+      - repoops_zoekt_index:/data/index
+      - repoops_workspaces:/workspaces:ro
+      - .:/workspaces/repo:ro
+    command: >
+      sh -c "while true; do
+      /usr/local/bin/zoekt-index -index /data/index $${ZOEK_INDEX_ARGS:-} $${ZOEK_INDEX_PATHS:-/workspaces};
+      sleep $${ZOEK_INDEX_INTERVAL:-60};
+      done"
+    healthcheck:
+      test: ["CMD-SHELL", "test -d /data/index"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+
+  zoekt-index-once:
+    build:
+      context: .
+      dockerfile: infra/Dockerfile.zoekt
+    profiles: ["zoekt"]
+    volumes:
+      - repoops_zoekt_index:/data/index
+      - repoops_workspaces:/workspaces:ro
+      - .:/workspaces/repo:ro
+    entrypoint: ["/usr/local/bin/zoekt-index"]
+    command: ["-index", "/data/index", "/workspaces"]
+
+  zoekt-web:
+    build:
+      context: .
+      dockerfile: infra/Dockerfile.zoekt
+    profiles: ["zoekt"]
+    restart: unless-stopped
+    ports:
+      - "6070:6070"
+    volumes:
+      - repoops_zoekt_index:/data/index
+    entrypoint: ["/usr/local/bin/zoekt-webserver"]
+    command: ["-index", "/data/index", "-listen", ":6070", "-rpc"]
+    healthcheck:
+      test: ["CMD-SHELL", "if command -v wget >/dev/null 2>&1; then wget -qO- http://localhost:6070/ >/dev/null; elif command -v curl >/dev/null 2>&1; then curl -fsS http://localhost:6070/ >/dev/null; else exit 0; fi"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+
+  eval:
+    build:
+      context: .
+      dockerfile: infra/Dockerfile
+      target: worker
+    profiles: ["eval"]
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - .:/app
+      - repoops_workspaces:/workspaces
+      - .:/workspaces/repo:ro
+    environment:
+      WORKSPACE_ROOT: /workspaces
+      ZOEK_URL: ${ZOEK_URL:-http://zoekt-web:6070}
+      LEXICAL_PRIMARY: ${LEXICAL_PRIMARY:-zoekt}
+    entrypoint: ["python", "-m", "repoops.eval.run_eval"]
+    command: ["--dataset", "repoops/eval/data/sample_tasks.jsonl", "--repo-root", "/app", "--index"]
+
+volumes:
+  repoops_db:
+  repoops_workspaces:
+  repoops_zoekt_index:

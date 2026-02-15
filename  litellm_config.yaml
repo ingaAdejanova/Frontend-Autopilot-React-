@@ -1,0 +1,7 @@
+model_list:
+  - model_name: local-coder
+    litellm_params:
+      model: ollama/qwen2.5-coder:7b
+      api_base: http://host.docker.internal:11434
+      # IMPORTANT: make it chat (so /v1/chat/completions works)
+      mode: chat

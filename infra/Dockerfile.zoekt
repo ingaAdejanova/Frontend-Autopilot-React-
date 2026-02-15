@@ -1,0 +1,17 @@
+# syntax=docker/dockerfile:1
+
+FROM golang:1.24-alpine AS builder
+
+RUN apk add --no-cache git ca-certificates build-base
+
+# Build zoekt binaries
+RUN go install github.com/sourcegraph/zoekt/cmd/zoekt-index@latest \
+  && go install github.com/sourcegraph/zoekt/cmd/zoekt-webserver@latest
+
+FROM alpine:3.19
+RUN apk add --no-cache ca-certificates
+
+COPY --from=builder /go/bin/zoekt-index /usr/local/bin/zoekt-index
+COPY --from=builder /go/bin/zoekt-webserver /usr/local/bin/zoekt-webserver
+
+ENTRYPOINT ["/bin/sh", "-c"]

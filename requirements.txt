@@ -1,0 +1,11 @@
+fastapi==0.115.6
+uvicorn[standard]==0.30.6
+SQLAlchemy==2.0.36
+psycopg[binary]>=3.1.16
+pydantic==2.9.2
+python-dotenv==1.0.1
+requests==2.32.3
+tenacity==9.0.0
+langgraph>=0.2.40
+typing_extensions>=4.9.0
+langsmith>=0.1.0

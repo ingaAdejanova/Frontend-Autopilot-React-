@@ -1,0 +1,20 @@
+{"id": "t1", "task": "Update the main App component to show a loading state while data is being fetched.", "expected_paths": ["src/App.tsx"]}
+{"id": "t2", "task": "Add a basic unit test for the Search component render.", "expected_paths": ["src/components/core/Icons/Search.tsx", "src/__tests__/components/search.test.tsx"]}
+{"id": "t3", "task": "Refactor the use Fetch hook to support an optional leading flag.", "expected_paths": ["src/hooks/useFetch.ts"]}
+{"id": "t4", "task": "Refactor the use Query Param hook to support an optional leading flag.", "expected_paths": ["src/hooks/useQueryParam.ts"]}
+{"id": "t5", "task": "Refactor the use Debounce hook to support an optional leading flag.", "expected_paths": ["src/hooks/useDebounce.ts"]}
+{"id": "t6", "task": "Refactor the use Pagination hook to support an optional leading flag.", "expected_paths": ["src/hooks/usePagination.ts"]}
+{"id": "t7", "task": "Update the Search Bar component to accept a new optional prop.", "expected_paths": ["src/components/core/SearchBar/index.ts"]}
+{"id": "t8", "task": "Update the Movie List component to accept a new optional prop.", "expected_paths": ["src/pages/MoviePage/MovieList/MovieList.tsx"]}
+{"id": "t9", "task": "Update the Movie Detail Page component to accept a new optional prop.", "expected_paths": ["src/pages/MovieDetailPage/MovieDetailPage.tsx"]}
+{"id": "t10", "task": "Update the Image component to accept a new optional prop.", "expected_paths": ["src/components/core/Image/index.ts"]}
+{"id": "t11", "task": "Update the Searched Movie List component to accept a new optional prop.", "expected_paths": ["src/pages/MoviePage/MovieList/SearchedMovieList.tsx"]}
+{"id": "t12", "task": "Update the Search Bar component to accept a new optional prop.", "expected_paths": ["src/components/core/SearchBar/SearchBar.tsx"]}
+{"id": "t13", "task": "Improve the store selector to handle missing state safely.", "expected_paths": ["src/redux/store/index.ts"]}
+{"id": "t14", "task": "Improve the hooks selector to handle missing state safely.", "expected_paths": ["src/redux/store/hooks.ts"]}
+{"id": "t15", "task": "Improve the types selector to handle missing state safely.", "expected_paths": ["src/redux/types.ts"]}
+{"id": "t16", "task": "Improve the popular Movie Slice selector to handle missing state safely.", "expected_paths": ["src/redux/popularMovieSlice.ts"]}
+{"id": "t17", "task": "Improve the search Movie Slice selector to handle missing state safely.", "expected_paths": ["src/redux/searchMovieSlice.ts"]}
+{"id": "t18", "task": "Wire an existing page into the router config.", "expected_paths": ["src/routes/index.ts"]}
+{"id": "t19", "task": "Refactor the API client to include a shared base URL.", "expected_paths": ["src/api/url.ts"]}
+{"id": "t20", "task": "Refactor the API client to include a shared base URL.", "expected_paths": ["src/api/fetcher.ts"]}
